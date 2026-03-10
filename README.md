@@ -1,21 +1,21 @@
-# TeachStack Sync
+# Tech Stack Sync
 
-A minimal, privacy-first authentication proxy that handles OAuth token management for all local first TeachStack projects. Apps never touch OAuth tokens directly — this service handles the full lifecycle on their behalf.
+A monorepo providing local-first cloud sync infrastructure for the Teach Stack apps. Apps store data locally using [SignalDB](https://signaldb.js.org/) and optionally back up to a user's personal cloud storage (Google Drive, OneDrive, etc.). No user data passes through any shared server.
 
 
 ## Why
-Local-first applications are a powerful way to build software that works offline and syncs when it can. However, managing OAuth tokens for cloud storage providers can be a pain for both developers and users. TeachStack Sync abstracts away this complexity, providing a seamless authentication experience across all TeachStack apps while keeping user data private and secure.
+
+Most sync solutions require a central database that holds everyone's data. Tech Stack Sync takes a different approach: each user's data lives in their own cloud storage account, and this toolkit provides the tools to get it there. The backend handles only authentication — it never sees what users are syncing.
 
 
-## How It Works
-Any locally-first design TeachStack application redirects the user to the auth service to connect a cloud storage provider (Google Drive, OneDrive, etc.). On success, a shared session cookie is issued scoped to .teachstack.org domain, which all subdomains receive automatically. 
-
-When an app needs to sync, it requests a fresh access token from this service — the app then talks to the provider directly, and no file data ever passes through this server.
+## Structure
 
 ```
-pyrepl.teachstack.org     ─┐
-webrepl.teachstack.org    ─┼──► sync.teachstack.org ──► Cloud Storage Provider
-step-out.teachstack.org   ─┘              │
-                                 .teachstack.org
-                                  session cookie
+tech-stack-sync/
+├── apps/
+│   ├── auth/               # OAuth proxy backend (auth.teachstack.org)
+│   └── demo/               # Demo site for local development and testing
+└── packages/
+    ├── auth/               # Client SDK for interfacing with the auth server
+    └── sync/               # SignalDB helpers for cloud provider sync
 ```
