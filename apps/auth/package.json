@@ -1,6 +1,7 @@
 {
   "name": "@teach-stack/auth",
   "type": "module",
+  "version": "0.0.1",
   "scripts": {
     "dev": "wrangler dev",
     "build": "tsdown"
