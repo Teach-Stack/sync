@@ -1,12 +1,8 @@
 {
   "name": "teach-stack-sync",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "scripts": {},
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Justin Forlenza",
+  "repository": "https://github.com/teach-stack/sync",
+  "license": "AGPL-3.0-only",
   "packageManager": "pnpm@10.31.0",
   "devDependencies": {
     "@biomejs/biome": "^2.4.6"

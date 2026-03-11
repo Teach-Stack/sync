@@ -1,7 +1,10 @@
 {
   "name": "@teach-stack/auth",
+  "author": "Justin Forlenza",
+  "repository": "https://github.com/teach-stack/css",
   "type": "module",
   "version": "0.0.1",
+  "license": "AGPL-3.0-only",
   "scripts": {
     "dev": "wrangler dev",
     "build": "tsdown"
