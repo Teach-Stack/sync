@@ -4,10 +4,15 @@
   "scripts": {
     "build": "nitro build",
     "dev": "nitro dev",
-    "preview": "node .output/server/index.mjs"
+    "preview": "node .output/server/index.mjs",
+    "postinstall": "nitro prepare"
   },
   "devDependencies": {
     "h3": "^1.15.4",
     "nitropack": "^2.12.4"
+  },
+  "dependencies": {
+    "arkenv": "^0.11.0",
+    "arktype": "^2.2.0"
   }
 }
