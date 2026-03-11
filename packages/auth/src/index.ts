@@ -15,3 +15,5 @@ export {
   type InferRequestType,
   type InferResponseType,
 } from 'hono/client'
+
+const test = createClient('http://localhost:3000')

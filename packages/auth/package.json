@@ -1,9 +1,9 @@
 {
   "name": "@teach-stack/auth",
   "author": "Justin Forlenza",
-  "repository": "https://github.com/teach-stack/sync",
+  "repository": "https://github.com/Teach-Stack/sync/tree/main/packages/auth",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "AGPL-3.0-only",
   "description": "Helper library for communicating with TeachStack auth backend",
   "scripts": {
