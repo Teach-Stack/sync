@@ -1,7 +1,6 @@
 import { ArkErrors, type } from 'arktype'
 import { env } from '../env'
 
-import { sValidator } from '@hono/standard-validator'
 import { validator } from 'hono/validator'
 
 export const ProviderKey = type(`'google' | 'microsoft'`)

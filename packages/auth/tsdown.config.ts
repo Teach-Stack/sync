@@ -4,8 +4,9 @@ export default defineConfig({
   entry: ['src/index.ts'],
   format: ['esm'],
   clean: true,
-  deps: {
-    // alwaysBundle: ['hono/client', 'hono/utils/http-status'],
-  },
   sourcemap: true,
+  dts: true,
+  deps: {
+    alwaysBundle: ['@standard-schema/spec'],
+  },
 })

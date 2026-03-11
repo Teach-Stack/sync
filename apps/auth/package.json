@@ -1,24 +1,19 @@
 {
   "name": "@teach-stack/auth-server",
   "version": "0.0.1",
+  "main": "./src/index.ts",
   "scripts": {
     "dev": "wrangler dev"
   },
-  "files": [
-    "dist"
-  ],
-  "exports": {
-    ".": {
-      "types": "./src/exports.ts"
-    }
+  "dependencies": {
+    "@standard-schema/spec": "^1.1.0"
   },
-  "dependencies": {},
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260310.1",
-    "wrangler": "^4.72.0",
     "@hono/standard-validator": "^0.2.2",
     "arkenv": "^0.11.0",
     "arktype": "^2.2.0",
-    "hono": "^4.12.7"
+    "hono": "^4.12.7",
+    "wrangler": "^4.72.0"
   }
 }
