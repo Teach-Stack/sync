@@ -1,18 +1,41 @@
 {
-  "name": "@teach-stack/auth-server",
-  "private": true,
+  "name": "@teach-stack/auth",
+  "type": "module",
   "scripts": {
-    "build": "nitro build",
-    "dev": "nitro dev",
-    "preview": "node .output/server/index.mjs",
-    "postinstall": "nitro prepare"
+    "dev": "wrangler dev",
+    "build:client": "tsup"
   },
-  "devDependencies": {
-    "h3": "^1.15.4",
-    "nitropack": "^2.12.4"
+  "exports": {
+    ".": {
+      "import": "./src/client/index.ts",
+      "types": "./src/client/index.ts"
+    }
   },
   "dependencies": {
+    "@hono/standard-validator": "^0.2.2",
+    "@types/node": "^25.4.0",
     "arkenv": "^0.11.0",
-    "arktype": "^2.2.0"
+    "arktype": "^2.2.0",
+    "hono": "^4.12.7"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260310.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.72.0"
+  },
+  "tsup": {
+    "entry": [
+      "src/client/index.ts"
+    ],
+    "format": [
+      "esm"
+    ],
+    "dts": true,
+    "sourcemap": true,
+    "noExternal": [
+      "hono"
+    ],
+    "clean": true
   }
 }

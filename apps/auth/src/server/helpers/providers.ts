@@ -1,10 +1,11 @@
-import type { H3Event } from 'h3'
-
 import { ArkErrors, type } from 'arktype'
-import { env } from '~/env'
+import { env } from '../env'
 
-const ProviderKey = type(`'google' | 'microsoft'`)
-type ProviderKey = type.infer<typeof ProviderKey>
+import { sValidator } from '@hono/standard-validator'
+import { validator } from 'hono/validator'
+
+export const ProviderKey = type(`'google' | 'microsoft'`)
+export type ProviderKey = type.infer<typeof ProviderKey>
 
 interface Provider {
   name: string
@@ -37,32 +38,20 @@ const providers: Record<ProviderKey, Provider> = {
   },
 }
 
-export function getProviders() {
-  return Object.values(providers).filter(
-    (provider) => provider.clientId && provider.clientSecret,
-  )
-}
-
-export function getProvider(event: H3Event) {
-  const raw = getRouterParam(event, 'provider')
+export const providerValidator = validator('param', (value, c) => {
+  const raw = value.provider
 
   const key = ProviderKey(raw)
 
   if (key instanceof ArkErrors) {
-    throw createError({
-      status: 404,
-      statusMessage: 'Not Found',
-    })
+    return c.json({ error: 'Invalid provider key' }, 400)
   }
 
   const provider = providers[key]
 
   if (provider.clientId === undefined || provider.clientSecret === undefined) {
-    throw createError({
-      status: 503,
-      statusMessage: `${provider.name} provider is not configured`,
-    })
+    return c.json({ error: `Provider ${provider.name} is not configured` }, 503)
   }
 
-  return provider
-}
+  return { provider }
+})
