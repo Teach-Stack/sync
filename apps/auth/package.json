@@ -1,7 +1,16 @@
 {
   "name": "@teach-stack/auth-server",
   "version": "0.0.1",
-  "main": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./client": {
+      "import": "./src/client.ts",
+      "types": "./src/client.ts"
+    }
+  },
   "scripts": {
     "dev": "wrangler dev"
   },
