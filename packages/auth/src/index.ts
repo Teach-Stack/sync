@@ -1,5 +1,6 @@
 import { type ClientRequestOptions, hc } from 'hono/client'
-import type { AppType } from '../server'
+
+import type { AppType } from '@teach-stack/auth-server'
 
 export function createClient(
   baseUrl: string,

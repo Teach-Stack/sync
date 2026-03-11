@@ -1,21 +1,5 @@
-```txt
-npm install
-npm run dev
-```
+# @teach-stack/auth-server
 
-```txt
-npm run deploy
-```
+Auth backend for the Teach Stack apps, deployed at auth.teachstack.org.
 
-[For generating/synchronizing types based on your Worker configuration run](https://developers.cloudflare.com/workers/wrangler/commands/#types):
-
-```txt
-npm run cf-typegen
-```
-
-Pass the `CloudflareBindings` as generics when instantiation `Hono`:
-
-```ts
-// src/index.ts
-const app = new Hono<{ Bindings: CloudflareBindings }>()
-```
+Stores encrypted refresh tokens and exchanges them for short-lived access tokens on demand. Issues a shared session cookie scoped to .teachstack.org so users connect a provider once and all subdomain apps benefit automatically. File data never passes through this server.

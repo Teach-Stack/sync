@@ -20,9 +20,6 @@ importers:
       '@hono/standard-validator':
         specifier: ^0.2.2
         version: 0.2.2(@standard-schema/spec@1.1.0)(hono@4.12.7)
-      '@types/node':
-        specifier: ^25.4.0
-        version: 25.4.0
       arkenv:
         specifier: ^0.11.0
         version: 0.11.0(arktype@2.2.0)
@@ -32,15 +29,24 @@ importers:
       hono:
         specifier: ^4.12.7
         version: 4.12.7
+      wrangler:
+        specifier: ^4.72.0
+        version: 4.72.0(@cloudflare/workers-types@4.20260310.1)
+
+  packages/auth:
+    devDependencies:
+      '@teach-stack/auth-server':
+        specifier: workspace:^
+        version: link:../../apps/auth
+      hono:
+        specifier: ^4.12.7
+        version: 4.12.7
       tsdown:
         specifier: ^0.21.2
         version: 0.21.2(typescript@5.9.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
-      wrangler:
-        specifier: ^4.72.0
-        version: 4.72.0(@cloudflare/workers-types@4.20260310.1)
 
 packages:
 
@@ -653,9 +659,6 @@ packages:
   '@types/jsesc@2.5.1':
     resolution: {integrity: sha512-9VN+6yxLOPLOav+7PwjZbxiID2bVaeq0ED4qSQmdQTdjnXJSaCVKTR58t15oqH1H5t8Ng2ZX1SabJVoN9Q34bw==}
 
-  '@types/node@25.4.0':
-    resolution: {integrity: sha512-9wLpoeWuBlcbBpOY3XmzSTG3oscB6xjBEEtn+pYXTfhyXhIxC5FsBer2KTopBlvKEiW9l13po9fq+SJY/5lkhw==}
-
   ansis@4.2.0:
     resolution: {integrity: sha512-HqZ5rWlFjGiV0tDm3UxxgNRqsOTniqoKZu0pIAfh7TZQMGuZK+hH0drySty0si0QXj1ieop4+SkSfPZBPPkHig==}
     engines: {node: '>=14'}
@@ -871,9 +874,6 @@ packages:
 
   unconfig-core@7.5.0:
     resolution: {integrity: sha512-Su3FauozOGP44ZmKdHy2oE6LPjk51M/TRRjHv2HNCWiDvfvCoxC2lno6jevMA91MYAdCdwP05QnWdWpSbncX/w==}
-
-  undici-types@7.18.2:
-    resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
   undici@7.18.2:
     resolution: {integrity: sha512-y+8YjDFzWdQlSE9N5nzKMT3g4a5UBX1HKowfdXh0uvAnTaqqwqB92Jt4UXBAeKekDs5IaDKyJFR4X1gYVCgXcw==}
@@ -1322,10 +1322,6 @@ snapshots:
 
   '@types/jsesc@2.5.1': {}
 
-  '@types/node@25.4.0':
-    dependencies:
-      undici-types: 7.18.2
-
   ansis@4.2.0: {}
 
   arkenv@0.11.0(arktype@2.2.0):
@@ -1562,8 +1558,6 @@ snapshots:
     dependencies:
       '@quansync/fs': 1.0.0
       quansync: 1.0.0
-
-  undici-types@7.18.2: {}
 
   undici@7.18.2: {}
 
