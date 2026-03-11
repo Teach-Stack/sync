@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "build:client": "tsup"
+    "build": "tsdown"
   },
   "exports": {
     ".": {
@@ -11,31 +11,24 @@
       "types": "./src/client/index.ts"
     }
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260310.1",
+    "tsdown": "^0.21.2",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.72.0",
     "@hono/standard-validator": "^0.2.2",
     "@types/node": "^25.4.0",
     "arkenv": "^0.11.0",
     "arktype": "^2.2.0",
     "hono": "^4.12.7"
   },
-  "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260310.1",
-    "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
-    "wrangler": "^4.72.0"
-  },
-  "tsup": {
-    "entry": [
-      "src/client/index.ts"
-    ],
-    "format": [
-      "esm"
-    ],
-    "dts": true,
-    "sourcemap": true,
-    "noExternal": [
-      "hono"
-    ],
-    "clean": true
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.mts",
+        "import": "./dist/index.mjs"
+      }
+    }
   }
 }

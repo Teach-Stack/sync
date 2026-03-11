@@ -1,5 +1,5 @@
-import type { AppType } from '../server'
 import { type ClientRequestOptions, hc } from 'hono/client'
+import type { AppType } from '../server'
 
 export function createClient(
   baseUrl: string,
@@ -10,7 +10,7 @@ export function createClient(
 
 export {
   parseResponse,
-  DetailedError,
-  InferRequestType,
-  InferResponseType,
+  type DetailedError,
+  type InferRequestType,
+  type InferResponseType,
 } from 'hono/client'
