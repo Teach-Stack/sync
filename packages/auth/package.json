@@ -3,7 +3,7 @@
   "author": "Justin Forlenza",
   "repository": "https://github.com/Teach-Stack/sync/tree/main/packages/auth",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "license": "AGPL-3.0-only",
   "description": "Helper library for communicating with TeachStack auth backend",
   "scripts": {
@@ -29,11 +29,10 @@
       ".": {
         "types": "./dist/index.d.mts",
         "import": "./dist/index.mjs"
-      },
-      "typings": "./dist/index.d.mts",
-      "main": "./dist/index.mjs"
+      }
     },
-    "main": "index.mjs"
+    "main": "./dist/index.mjs",
+    "types": "./dist/index.d.mts"
   },
   "peerDependencies": {
     "@standard-schema/spec": "^1.1.0"
