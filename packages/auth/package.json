@@ -23,7 +23,7 @@
     "tsdown": "^0.21.2",
     "typescript": "^5.9.3",
     "hono": "^4.12.7",
-    "@teach-stack/auth-server": "workspace:^"
+    "@teach-stack/auth-server": "workspace:*"
   },
   "publishConfig": {
     "exports": {

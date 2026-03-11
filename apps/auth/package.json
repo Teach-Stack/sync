@@ -1,5 +1,6 @@
 {
   "name": "@teach-stack/auth-server",
+  "version": "0.0.1",
   "scripts": {
     "dev": "wrangler dev"
   },
