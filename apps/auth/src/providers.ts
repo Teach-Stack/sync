@@ -50,11 +50,7 @@ class Provider {
 
     const codeChallenge = await client.calculatePKCECodeChallenge(codeVerifier)
 
-    let state = ''
-
-    if (!this.configuration.serverMetadata().supportsPKCE()) {
-      state = client.randomState()
-    }
+    const state = client.randomState()
 
     const redirectUri = client.buildAuthorizationUrl(this.configuration, {
       scope: this.scopes.join(' '),
@@ -62,6 +58,8 @@ class Provider {
       code_challenge: codeChallenge,
       code_challenge_method: 'S256',
       state,
+      access_type: 'offline',
+      prompt: 'consent',
     })
 
     return {
@@ -69,6 +67,30 @@ class Provider {
       codeVerifier,
       state,
     }
+  }
+
+  async handleCallback(
+    url: URL | string,
+    oauthState: { codeVerifier: string; state: string },
+  ) {
+    if (!this.configuration) {
+      this.configuration = await this.getConfiguration()
+    }
+
+    if (!(url instanceof URL)) {
+      url = new URL(url)
+    }
+
+    const tokens = await client.authorizationCodeGrant(
+      this.configuration,
+      url,
+      {
+        pkceCodeVerifier: oauthState.codeVerifier,
+        expectedState: oauthState.state,
+      },
+    )
+
+    return tokens
   }
 }
 
