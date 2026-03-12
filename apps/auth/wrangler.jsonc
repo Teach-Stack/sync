@@ -1,7 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "auth-hono",
+  "name": "teachstack-auth",
   "main": "src/index.ts",
-  "compatibility_date": "2026-03-11",
-  "compatibility_flags": ["nodejs_compat_populate_process_env", "nodejs_compat"]
+  "compatibility_date": "2026-03-11"
 }

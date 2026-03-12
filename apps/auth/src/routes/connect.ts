@@ -13,7 +13,7 @@ const TokenResponse = type({
   expires_in: 'number',
   refresh_expires_in: 'number',
 })
-type TokenResponse = typeof TokenResponse.infer
+// type TokenResponse = typeof TokenResponse.infer
 
 export const connect = new Hono()
   .get(
