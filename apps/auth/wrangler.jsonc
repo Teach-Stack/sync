@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "auth-hono",
-  "main": "src/server/index.ts",
+  "main": "src/index.ts",
   "compatibility_date": "2026-03-11",
   "compatibility_flags": ["nodejs_compat_populate_process_env", "nodejs_compat"]
 }

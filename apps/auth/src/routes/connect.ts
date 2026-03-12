@@ -2,7 +2,8 @@ import { sValidator } from '@hono/standard-validator'
 import { Hono } from 'hono'
 
 import { type } from 'arktype'
-import { providerValidator } from '../helpers/providers'
+
+import { providerValidator } from '../validator/provider'
 
 export const connect = new Hono()
   .get(
@@ -11,14 +12,17 @@ export const connect = new Hono()
     sValidator(
       'query',
       type({
-        redirect_uri: 'string',
+        returnTo: 'string',
       }),
     ),
-    (c) => {
+    async (c) => {
       const { provider } = c.req.valid('param')
-      const { redirect_uri } = c.req.valid('query')
+      const { returnTo } = c.req.valid('query')
 
-      return c.json({ provider, redirect_uri })
+      const { redirectUri, codeVerifier, state } =
+        await provider.getRedirectUri()
+
+      return c.json({ redirectUri })
     },
   )
   .get('/:provider/callback', providerValidator, (c) => {
