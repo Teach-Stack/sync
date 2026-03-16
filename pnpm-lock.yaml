@@ -29,6 +29,9 @@ importers:
       hono:
         specifier: ^4.12.7
         version: 4.12.7
+      nanoid:
+        specifier: ^5.1.7
+        version: 5.1.7
       openid-client:
         specifier: ^6.8.2
         version: 6.8.2
@@ -779,6 +782,11 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
+  nanoid@5.1.7:
+    resolution: {integrity: sha512-ua3NDgISf6jdwezAheMOk4mbE1LXjm1DfMUDMuJf4AqxLFK3ccGpgWizwa5YV7Yz9EpXwEaWoRXSb/BnV0t5dQ==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+
   oauth4webapi@3.8.5:
     resolution: {integrity: sha512-A8jmyUckVhRJj5lspguklcl90Ydqk61H3dcU0oLhH3Yv13KpAliKTt5hknpGGPZSSfOwGyraNEFmofDYH+1kSg==}
 
@@ -1447,6 +1455,8 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+
+  nanoid@5.1.7: {}
 
   oauth4webapi@3.8.5: {}
 

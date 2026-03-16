@@ -9,8 +9,8 @@ const OAuthStateCookie = type({
   state: 'string',
 })
 
-export const oauthCookieValidator = validator('cookie', async (value, c) => {
-  const raw = await getSignedCookie(c, 'oauthState')
+export const oauthCookieValidator = validator('cookie', async (_, c) => {
+  const raw = await getSignedCookie(c, 'teachstack:oauthState')
 
   const parsed = raw ? JSON.parse(raw) : null
 

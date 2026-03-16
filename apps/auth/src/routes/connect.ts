@@ -3,9 +3,12 @@ import { Hono } from 'hono'
 
 import { ArkErrors, type } from 'arktype'
 
-import { providerValidator } from '../validators/provider'
-import { setSignedCookie } from '../helpers/cookies'
 import { oauthCookieValidator } from '../validators/cookie'
+import { setSignedCookie } from '../helpers/cookies'
+import { providerValidator } from '../validators/provider'
+import { getSessionUser } from '../helpers/user'
+import { nanoid } from 'nanoid'
+import { getDB } from '../helpers/db'
 
 const TokenResponse = type({
   access_token: 'string',
@@ -38,13 +41,18 @@ export const connect = new Hono()
         state,
       }
 
-      await setSignedCookie(c, 'oauthState', JSON.stringify(oauthState), {
-        httpOnly: true,
-        secure: true,
-        path: '/connect',
-        maxAge: 60 * 15, // 15 minutes
-        sameSite: 'lax',
-      })
+      await setSignedCookie(
+        c,
+        'teachstack:oauthState',
+        JSON.stringify(oauthState),
+        {
+          httpOnly: true,
+          secure: true,
+          path: '/connect',
+          maxAge: 60 * 15, // 15 minutes
+          sameSite: 'lax',
+        },
+      )
 
       return c.json({ redirectUri })
     },
@@ -69,6 +77,23 @@ export const connect = new Hono()
           console.error('Token validation failed:', tokens)
           return c.json({ error: 'Invalid token response' }, 500)
         }
+
+        const existingUser = await getSessionUser(c, provider.key)
+
+        let userId = nanoid()
+
+        if (existingUser) {
+          userId = existingUser.id
+        }
+
+        const db = getDB(c)
+
+        db.prepare(`INSERT INTO users (id, provider, encoded_token)
+          VALUES (?, ?, ?)
+          ON CONFLICT(id, provider) DO UPDATE SET encoded_token = excluded.encoded_token
+        `)
+          .bind(userId, provider.key)
+          .run()
 
         return c.json({ tokens })
       } catch (error) {

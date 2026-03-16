@@ -1,9 +1,7 @@
 import type { Context } from 'hono'
 import * as cookie from 'hono/cookie'
-import { validator } from 'hono/validator'
 
 import { env } from '../env'
-import { ArkErrors, type } from 'arktype'
 
 type CookieOptions = Parameters<typeof cookie.setCookie>[3]
 
