@@ -21,14 +21,23 @@ const User = type({
 export async function getUserById(
   c: Context,
   id: string,
-  provider: ProviderKey,
+  provider?: ProviderKey,
 ) {
   const db = getDB(c)
 
-  const userRaw = await db
-    .prepare('SELECT * FROM users WHERE id = ? AND provider = ?')
-    .bind(id, provider)
-    .first()
+  let userRaw: Record<string, unknown> | null
+
+  if (provider) {
+    userRaw = await db
+      .prepare('SELECT * FROM users WHERE id = ? AND provider = ?')
+      .bind(id, provider)
+      .first()
+  } else {
+    userRaw = await db
+      .prepare('SELECT * FROM users WHERE id = ?')
+      .bind(id)
+      .first()
+  }
 
   const user = User(userRaw)
 
@@ -37,7 +46,7 @@ export async function getUserById(
   return user
 }
 
-export async function getSessionUser(c: Context, provider: ProviderKey) {
+export async function getSessionUser(c: Context, provider?: ProviderKey) {
   const cookie = getCookie(c, 'teachstack:user')
 
   if (!cookie) return null
