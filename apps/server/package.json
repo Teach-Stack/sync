@@ -1,5 +1,5 @@
 {
-  "name": "@teach-stack/auth-server",
+  "name": "@teach-stack/sync-server",
   "version": "0.0.1",
   "exports": {
     ".": {
