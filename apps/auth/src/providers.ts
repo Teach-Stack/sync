@@ -26,7 +26,7 @@ class Provider {
   }
 
   get clientSecret() {
-    const clientSecret = env[this.clientIdKey]
+    const clientSecret = env[this.clientSecretKey]
     
     if (Array.isArray(clientSecret)) throw new Error('client secret must be a string')
 

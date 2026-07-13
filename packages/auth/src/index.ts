@@ -6,7 +6,10 @@ export function createClient(
   baseUrl: string,
   options: ClientRequestOptions = {},
 ) {
-  return hcWithType(baseUrl, options)
+  return hcWithType(baseUrl, {
+    ...options,
+    init: { credentials: 'include', ...options.init },
+  })
 }
 
 export {

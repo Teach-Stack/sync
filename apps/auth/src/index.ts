@@ -9,6 +9,7 @@ const app = new Hono()
     '*',
     cors({
       origin: env.ALLOWED_ORIGINS,
+      credentials: true,
     }),
   )
   .route('/connect', connect)

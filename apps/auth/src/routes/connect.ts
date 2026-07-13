@@ -14,7 +14,7 @@ const TokenResponse = type({
   access_token: 'string',
   refresh_token: 'string',
   expires_in: 'number',
-  refresh_expires_in: 'number',
+  refresh_token_expires_in: 'number',
 })
 // type TokenResponse = typeof TokenResponse.infer
 
@@ -43,7 +43,7 @@ export const connect = new Hono()
 
       await setSignedCookie(
         c,
-        'teachstack:oauthState',
+        'teachstack-oauthState',
         JSON.stringify(oauthState),
         {
           httpOnly: true,
@@ -74,7 +74,7 @@ export const connect = new Hono()
         const tokens = TokenResponse(response)
 
         if (tokens instanceof ArkErrors) {
-          console.error('Token validation failed:', tokens)
+          console.error('Token validation failed:', tokens.toJSON())
           return c.json({ error: 'Invalid token response' }, 500)
         }
 
