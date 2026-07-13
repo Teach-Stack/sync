@@ -2,10 +2,7 @@ import type { ClientRequestOptions } from 'hono/client'
 
 import { hcWithType } from '@teach-stack/auth-server/client'
 
-export function createClient(
-  baseUrl: string,
-  options: ClientRequestOptions = {},
-) {
+export function createClient(baseUrl: string, options: ClientRequestOptions = {}) {
   return hcWithType(baseUrl, {
     ...options,
     init: { credentials: 'include', ...options.init },

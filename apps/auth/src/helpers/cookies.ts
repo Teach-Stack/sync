@@ -13,7 +13,7 @@ export async function setSignedCookie(
   c: Context,
   name: string,
   value: string,
-  opt: CookieOptions = {},
+  opt: CookieOptions = {}
 ) {
   await cookie.setSignedCookie(c, name, value, env.SECRET_KEY, opt)
 }

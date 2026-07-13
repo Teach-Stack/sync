@@ -21,7 +21,7 @@ export const oauthCookieValidator = validator('cookie', async (_, c) => {
   const oauthState = OAuthStateCookie(parsed)
 
   if (oauthState instanceof ArkErrors) {
-    console.debug("oauth state is invalid shape", oauthState.toJSON())
+    console.debug('oauth state is invalid shape', oauthState.toJSON())
     return c.json({ error: 'Invalid OAuth state cookie' }, 400)
   }
 

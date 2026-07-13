@@ -1,38 +1,38 @@
 {
   "name": "@teach-stack/auth",
+  "version": "0.0.5",
+  "description": "Helper library for communicating with TeachStack auth backend",
+  "license": "AGPL-3.0-only",
   "author": "Justin Forlenza",
   "repository": "https://github.com/Teach-Stack/sync/tree/main/packages/auth",
-  "type": "module",
-  "version": "0.0.5",
-  "license": "AGPL-3.0-only",
-  "description": "Helper library for communicating with TeachStack auth backend",
-  "scripts": {
-    "build": "tsdown"
-  },
   "files": [
     "dist"
   ],
+  "type": "module",
   "exports": {
     ".": {
       "import": "./src/index.ts",
       "types": "./src/index.ts"
     }
   },
-  "devDependencies": {
-    "@teach-stack/auth-server": "workspace:*",
-    "hono": "^4.12.30",
-    "tsdown": "^0.22.7",
-    "typescript": "^7.0.2"
-  },
   "publishConfig": {
+    "main": "./dist/index.mjs",
+    "types": "./dist/index.d.mts",
     "exports": {
       ".": {
         "types": "./dist/index.d.mts",
         "import": "./dist/index.mjs"
       }
-    },
-    "main": "./dist/index.mjs",
-    "types": "./dist/index.d.mts"
+    }
+  },
+  "scripts": {
+    "build": "tsdown"
+  },
+  "devDependencies": {
+    "@teach-stack/auth-server": "workspace:*",
+    "hono": "^4.12.30",
+    "tsdown": "^0.22.7",
+    "typescript": "^7.0.2"
   },
   "peerDependencies": {
     "@standard-schema/spec": "^1.1.0"

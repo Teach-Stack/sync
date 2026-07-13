@@ -7,7 +7,7 @@ export const env = arkenv(
   {
     BASE_URL: 'string',
     SECRET_KEY: 'string',
-    ALLOWED_ORIGINS: type('string[]').default(() => ["http://localhost:5173"]),
+    ALLOWED_ORIGINS: type('string[]').default(() => ['http://localhost:5173']),
     'GOOGLE_CLIENT_ID?': 'string',
     'GOOGLE_CLIENT_SECRET?': 'string',
     'MICROSOFT_CLIENT_ID?': 'string',
@@ -15,7 +15,7 @@ export const env = arkenv(
   },
   {
     env: cloudflareEnv as unknown as Record<string, string>,
-  },
+  }
 )
 
 export type EnvKey = keyof typeof env

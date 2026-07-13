@@ -6,7 +6,7 @@ async function deriveKey(userId: string) {
     new TextEncoder().encode(env.SECRET_KEY),
     { name: 'HKDF' },
     false,
-    ['deriveKey'],
+    ['deriveKey']
   )
 
   return await crypto.subtle.deriveKey(
@@ -19,6 +19,6 @@ async function deriveKey(userId: string) {
     keyMaterial,
     { name: 'AES-GCM', length: 256 },
     false,
-    ['encrypt', 'decrypt'],
+    ['encrypt', 'decrypt']
   )
 }

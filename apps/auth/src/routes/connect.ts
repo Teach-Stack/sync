@@ -26,14 +26,13 @@ export const connect = new Hono()
       'query',
       type({
         returnTo: 'string',
-      }),
+      })
     ),
     async (c) => {
       const { provider } = c.req.valid('param')
       const { returnTo } = c.req.valid('query')
 
-      const { redirectUri, codeVerifier, state } =
-        await provider.getRedirectUri()
+      const { redirectUri, codeVerifier, state } = await provider.getRedirectUri()
 
       const oauthState = {
         codeVerifier,
@@ -41,64 +40,54 @@ export const connect = new Hono()
         state,
       }
 
-      await setSignedCookie(
-        c,
-        'teachstack.oauthState',
-        JSON.stringify(oauthState),
-        {
-          httpOnly: true,
-          secure: true,
-          path: '/connect',
-          maxAge: 60 * 15, // 15 minutes
-          sameSite: 'lax',
-        },
-      )
+      await setSignedCookie(c, 'teachstack.oauthState', JSON.stringify(oauthState), {
+        httpOnly: true,
+        secure: true,
+        path: '/connect',
+        maxAge: 60 * 15, // 15 minutes
+        sameSite: 'lax',
+      })
 
       return c.json({ redirectUri })
-    },
+    }
   )
-  .get(
-    '/:provider/callback',
-    providerValidator,
-    oauthCookieValidator,
-    async (c) => {
-      const { provider } = c.req.valid('param')
+  .get('/:provider/callback', providerValidator, oauthCookieValidator, async (c) => {
+    const { provider } = c.req.valid('param')
 
-      const { oauthState } = c.req.valid('cookie')
+    const { oauthState } = c.req.valid('cookie')
 
-      console.debug('OAuth State:', oauthState)
+    console.debug('OAuth State:', oauthState)
 
-      try {
-        const response = await provider.handleCallback(c.req.url, oauthState)
+    try {
+      const response = await provider.handleCallback(c.req.url, oauthState)
 
-        const tokens = TokenResponse(response)
+      const tokens = TokenResponse(response)
 
-        if (tokens instanceof ArkErrors) {
-          console.error('Token validation failed:', tokens.toJSON())
-          return c.json({ error: 'Invalid token response' }, 500)
-        }
+      if (tokens instanceof ArkErrors) {
+        console.error('Token validation failed:', tokens.toJSON())
+        return c.json({ error: 'Invalid token response' }, 500)
+      }
 
-        const existingUser = await getSessionUser(c, provider.key)
+      const existingUser = await getSessionUser(c, provider.key)
 
-        let userId = nanoid()
+      let userId = nanoid()
 
-        if (existingUser) {
-          userId = existingUser.id
-        }
+      if (existingUser) {
+        userId = existingUser.id
+      }
 
-        const db = getDB(c)
+      const db = getDB(c)
 
-        db.prepare(`INSERT INTO users (id, provider, encoded_token)
+      db.prepare(`INSERT INTO users (id, provider, encoded_token)
           VALUES (?, ?, ?)
           ON CONFLICT(id, provider) DO UPDATE SET encoded_token = excluded.encoded_token
         `)
-          .bind(userId, provider.key)
-          .run()
+        .bind(userId, provider.key)
+        .run()
 
-        return c.json({ tokens })
-      } catch (error) {
-        console.error('Error handling OAuth callback:', error)
-        return c.json({ error: 'Failed to handle OAuth callback' }, 500)
-      }
-    },
-  )
+      return c.json({ tokens })
+    } catch (error) {
+      console.error('Error handling OAuth callback:', error)
+      return c.json({ error: 'Failed to handle OAuth callback' }, 500)
+    }
+  })

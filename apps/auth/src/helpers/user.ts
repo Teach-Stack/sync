@@ -18,11 +18,7 @@ const User = type({
   encodedToken: 'string',
 })
 
-export async function getUserById(
-  c: Context,
-  id: string,
-  provider?: ProviderKey,
-) {
+export async function getUserById(c: Context, id: string, provider?: ProviderKey) {
   const db = getDB(c)
 
   let userRaw: Record<string, unknown> | null
@@ -33,10 +29,7 @@ export async function getUserById(
       .bind(id, provider)
       .first()
   } else {
-    userRaw = await db
-      .prepare('SELECT * FROM users WHERE id = ?')
-      .bind(id)
-      .first()
+    userRaw = await db.prepare('SELECT * FROM users WHERE id = ?').bind(id).first()
   }
 
   const user = User(userRaw)

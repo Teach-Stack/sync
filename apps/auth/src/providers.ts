@@ -14,7 +14,7 @@ class Provider {
     public clientIdKey: EnvKey,
     public clientSecretKey: EnvKey,
     public scopes: string[],
-    public discoveryUrl: URL,
+    public discoveryUrl: URL
   ) {}
 
   get clientId() {
@@ -27,7 +27,7 @@ class Provider {
 
   get clientSecret() {
     const clientSecret = env[this.clientSecretKey]
-    
+
     if (Array.isArray(clientSecret)) throw new Error('client secret must be a string')
 
     return clientSecret
@@ -42,11 +42,7 @@ class Provider {
       throw new Error(`Provider ${this.key} is not configured`)
     }
 
-    return await client.discovery(
-      this.discoveryUrl,
-      this.clientId,
-      this.clientSecret,
-    )
+    return await client.discovery(this.discoveryUrl, this.clientId, this.clientSecret)
   }
 
   async getRedirectUri() {
@@ -77,10 +73,7 @@ class Provider {
     }
   }
 
-  async handleCallback(
-    url: URL | string,
-    oauthState: { codeVerifier: string; state: string },
-  ) {
+  async handleCallback(url: URL | string, oauthState: { codeVerifier: string; state: string }) {
     if (!this.configuration) {
       this.configuration = await this.getConfiguration()
     }
@@ -89,14 +82,10 @@ class Provider {
       url = new URL(url)
     }
 
-    const tokens = await client.authorizationCodeGrant(
-      this.configuration,
-      url,
-      {
-        pkceCodeVerifier: oauthState.codeVerifier,
-        expectedState: oauthState.state,
-      },
-    )
+    const tokens = await client.authorizationCodeGrant(this.configuration, url, {
+      pkceCodeVerifier: oauthState.codeVerifier,
+      expectedState: oauthState.state,
+    })
 
     return tokens
   }
@@ -108,15 +97,13 @@ export const providers: Record<ProviderKey, Provider> = {
     'GOOGLE_CLIENT_ID',
     'GOOGLE_CLIENT_SECRET',
     ['email', 'https://www.googleapis.com/auth/drive.appdata'],
-    new URL('https://accounts.google.com/.well-known/openid-configuration'),
+    new URL('https://accounts.google.com/.well-known/openid-configuration')
   ),
   microsoft: new Provider(
     'microsoft',
     'MICROSOFT_CLIENT_ID',
     'MICROSOFT_CLIENT_SECRET',
     ['email', 'Files.ReadWrite.AppFolder'],
-    new URL(
-      'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration',
-    ),
+    new URL('https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration')
   ),
 }
