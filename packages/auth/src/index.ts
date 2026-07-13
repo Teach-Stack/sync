@@ -14,4 +14,5 @@ export {
   type DetailedError,
   type InferRequestType,
   type InferResponseType,
+  type ClientResponse,
 } from 'hono/client'

@@ -14,8 +14,8 @@
   ],
   "exports": {
     ".": {
-      "import": "./src/client/index.ts",
-      "types": "./src/client/index.ts"
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
     }
   },
   "devDependencies": {

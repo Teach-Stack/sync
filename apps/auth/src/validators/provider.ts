@@ -14,8 +14,13 @@ export const providerValidator = validator('param', (value, c) => {
   const provider = providers[key]
 
   if (!provider.isConfigured) {
-    return c.json({ error: `Provider ${provider.key} is not configured` }, 503)
+    return c.json(
+      { error: `Provider '${provider.key}' is not configured` },
+      503,
+    )
   }
 
-  return { provider, providerKey: key }
+  return {
+    provider,
+  }
 })
