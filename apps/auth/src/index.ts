@@ -2,13 +2,13 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 
 import { connect } from './routes/connect'
+import { env } from './env'
 
 const app = new Hono()
   .use(
     '*',
     cors({
-      origin: 'http://localhost:5173',
-      allowMethods: ['POST', 'GET', 'OPTIONS'],
+      origin: env.ALLOWED_ORIGINS,
     }),
   )
   .route('/connect', connect)

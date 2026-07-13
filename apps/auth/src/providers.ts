@@ -18,11 +18,19 @@ class Provider {
   ) {}
 
   get clientId() {
-    return env[this.clientIdKey]
+    const clientId = env[this.clientIdKey]
+
+    if (Array.isArray(clientId)) throw new Error('client id must be a string')
+
+    return clientId
   }
 
   get clientSecret() {
-    return env[this.clientSecretKey]
+    const clientSecret = env[this.clientIdKey]
+    
+    if (Array.isArray(clientSecret)) throw new Error('client secret must be a string')
+
+    return clientSecret
   }
 
   get isConfigured() {
