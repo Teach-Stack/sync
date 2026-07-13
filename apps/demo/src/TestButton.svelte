@@ -3,11 +3,8 @@
 </script>
 
 <script lang="ts" generics="T extends ClientResponse<unknown>">
-  import type { Snippet } from 'svelte'
-
   interface Props {
     onclick: () => Promise<T>
-    // children: Snippet
   }
 
   let { onclick }: Props = $props()

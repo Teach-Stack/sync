@@ -8,29 +8,35 @@
 <h1>@teach-stack/auth demo site</h1>
 
 <main>
-  <section data-title="/ping">
-    <TestButton onclick={authClient.ping.$get} />
-  </section>
-  <section data-title="/providers"></section>
-  <section data-title="/me"></section>
+  <section id="api">
+    <h2>API Kitchen Sink</h2>
+    <article data-title="/ping">
+      <TestButton onclick={authClient.ping.$get} />
+    </article>
+    <article data-title="/providers"></article>
+    <article data-title="/me"></article>
 
-  <section data-title="/connect/:provider">
-    <TestButton
-      onclick={() =>
-        authClient.connect[':provider'].$get({
-          param: { provider: 'google' },
-          query: { returnTo: 'http://localhost:5137' },
-        })}
-    />
+    <article data-title="/connect/:provider">
+      <TestButton
+        onclick={() =>
+          authClient.connect[':provider'].$get({
+            param: { provider: 'google' },
+            query: { returnTo: 'http://localhost:5173' },
+          })}
+      />
+    </article>
   </section>
 </main>
 
 <style>
-  main {
+  #api {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 8px;
-    section {
+    > h2 {
+      grid-column: 1/-1;
+    }
+    article {
       border: 1px solid black;
       padding: 12px;
       position: relative;

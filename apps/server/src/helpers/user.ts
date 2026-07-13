@@ -3,7 +3,7 @@ import { getCookie } from 'hono/cookie'
 
 import { ArkErrors, type } from 'arktype'
 
-import { verify } from './jwt'
+import { verifyJwt } from './jwt'
 import { getDB } from './db'
 
 import { ProviderKey } from '../providers'
@@ -15,7 +15,7 @@ const JWTPayload = type({
 const User = type({
   id: 'string',
   provider: ProviderKey,
-  encodedToken: 'string',
+  refresh_token: 'string',
 })
 
 export async function getUserById(c: Context, id: string, provider?: ProviderKey) {
@@ -40,11 +40,11 @@ export async function getUserById(c: Context, id: string, provider?: ProviderKey
 }
 
 export async function getSessionUser(c: Context, provider?: ProviderKey) {
-  const cookie = getCookie(c, 'teachstack:user')
+  const cookie = getCookie(c, 'teachstack.session')
 
   if (!cookie) return null
 
-  const raw = await verify(cookie)
+  const raw = await verifyJwt(cookie)
 
   const payload = JWTPayload(raw)
 

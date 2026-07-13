@@ -9,6 +9,8 @@ import { providerValidator } from '../validators/provider'
 import { getSessionUser } from '../helpers/user'
 import { nanoid } from 'nanoid'
 import { getDB } from '../helpers/db'
+import { setCookie } from 'hono/cookie'
+import { signJwt } from '../helpers/jwt'
 
 const TokenResponse = type({
   access_token: 'string',
@@ -25,7 +27,7 @@ export const connect = new Hono()
     sValidator(
       'query',
       type({
-        returnTo: 'string',
+        returnTo: 'string.url',
       })
     ),
     async (c) => {
@@ -78,14 +80,26 @@ export const connect = new Hono()
 
       const db = getDB(c)
 
-      db.prepare(`INSERT INTO users (id, provider, encoded_token)
+      await db
+        .prepare(`INSERT INTO users (id, provider, refresh_token)
           VALUES (?, ?, ?)
-          ON CONFLICT(id, provider) DO UPDATE SET encoded_token = excluded.encoded_token
+          ON CONFLICT(id, provider)
+          DO UPDATE SET 
+            refresh_token = excluded.refresh_token,
+            updated = unixepoch()
         `)
-        .bind(userId, provider.key)
+        .bind(userId, provider.key, tokens.refresh_token)
         .run()
 
-      return c.json({ tokens })
+      const jwt = await signJwt({ sub: userId })
+
+      setCookie(c, 'teachstack.session', jwt, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+      })
+
+      return c.redirect(oauthState.returnTo)
     } catch (error) {
       console.error('Error handling OAuth callback:', error)
       return c.json({ error: 'Failed to handle OAuth callback' }, 500)
