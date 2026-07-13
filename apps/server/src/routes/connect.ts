@@ -11,6 +11,9 @@ import { nanoid } from 'nanoid'
 import { getDB } from '../helpers/db'
 import { setCookie } from 'hono/cookie'
 import { signJwt } from '../helpers/jwt'
+import { logger } from '../helpers/log'
+
+const log = logger.withTag('connect')
 
 const TokenResponse = type({
   access_token: 'string',
@@ -34,7 +37,11 @@ export const connect = new Hono()
       const { provider } = c.req.valid('param')
       const { returnTo } = c.req.valid('query')
 
+      log.debug('start authorize', { provider: provider.key, returnTo })
+
       const { redirectUri, codeVerifier, state } = await provider.getRedirectUri()
+
+      log.debug('redirect built', { provider: provider.key })
 
       const oauthState = {
         codeVerifier,
@@ -50,6 +57,8 @@ export const connect = new Hono()
         sameSite: 'lax',
       })
 
+      log.debug('oauth state cookie set', { provider: provider.key })
+
       return c.json({ redirectUri })
     }
   )
@@ -58,7 +67,11 @@ export const connect = new Hono()
 
     const { oauthState } = c.req.valid('cookie')
 
-    console.debug('OAuth State:', oauthState)
+    // Redact codeVerifier — it's a PKCE secret and must not be logged.
+    log.debug('callback received', {
+      provider: provider.key,
+      returnTo: oauthState.returnTo,
+    })
 
     try {
       const response = await provider.handleCallback(c.req.url, oauthState)
@@ -66,9 +79,15 @@ export const connect = new Hono()
       const tokens = TokenResponse(response)
 
       if (tokens instanceof ArkErrors) {
-        console.error('Token validation failed:', tokens.toJSON())
+        log.error('token validation failed', tokens.toJSON())
         return c.json({ error: 'Invalid token response' }, 500)
       }
+
+      log.debug('token exchange ok', {
+        provider: provider.key,
+        expiresIn: tokens.expires_in,
+        hasRefreshToken: Boolean(tokens.refresh_token),
+      })
 
       const existingUser = await getSessionUser(c, provider.key)
 
@@ -77,6 +96,11 @@ export const connect = new Hono()
       if (existingUser) {
         userId = existingUser.id
       }
+
+      log.debug(existingUser ? 'existing user matched' : 'new user created', {
+        userId,
+        provider: provider.key,
+      })
 
       const db = getDB(c)
 
@@ -91,6 +115,8 @@ export const connect = new Hono()
         .bind(userId, provider.key, tokens.refresh_token)
         .run()
 
+      log.debug('user upsert done', { userId, provider: provider.key })
+
       const jwt = await signJwt({ sub: userId })
 
       setCookie(c, 'teachstack.session', jwt, {
@@ -99,9 +125,11 @@ export const connect = new Hono()
         sameSite: 'lax',
       })
 
+      log.debug('session cookie set, redirecting', { returnTo: oauthState.returnTo })
+
       return c.redirect(oauthState.returnTo)
     } catch (error) {
-      console.error('Error handling OAuth callback:', error)
+      log.error('error handling oauth callback', error)
       return c.json({ error: 'Failed to handle OAuth callback' }, 500)
     }
   })

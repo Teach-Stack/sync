@@ -3,6 +3,10 @@ import { env, type EnvKey } from './env'
 
 import * as client from 'openid-client'
 
+import { logger } from './helpers/log'
+
+const log = logger.withTag('provider')
+
 export const ProviderKey = type(`'google' | 'microsoft'`)
 export type ProviderKey = type.infer<typeof ProviderKey>
 
@@ -42,6 +46,11 @@ class Provider {
       throw new Error(`Provider ${this.key} is not configured`)
     }
 
+    log.debug('running oidc discovery', {
+      provider: this.key,
+      discoveryUrl: this.discoveryUrl.href,
+    })
+
     return await client.discovery(this.discoveryUrl, this.clientId, this.clientSecret)
   }
 
@@ -66,6 +75,12 @@ class Provider {
       prompt: 'consent',
     })
 
+    log.debug('built authorization url', {
+      provider: this.key,
+      scopes: this.scopes,
+      redirectUri: `${env.BASE_URL}/connect/${this.key}/callback`,
+    })
+
     return {
       redirectUri,
       codeVerifier,
@@ -82,10 +97,14 @@ class Provider {
       url = new URL(url)
     }
 
+    log.debug('exchanging authorization code for tokens', { provider: this.key })
+
     const tokens = await client.authorizationCodeGrant(this.configuration, url, {
       pkceCodeVerifier: oauthState.codeVerifier,
       expectedState: oauthState.state,
     })
+
+    log.debug('token exchange complete', { provider: this.key })
 
     return tokens
   }

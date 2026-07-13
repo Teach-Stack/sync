@@ -12,6 +12,7 @@ export const env = arkenv(
     'GOOGLE_CLIENT_SECRET?': 'string',
     'MICROSOFT_CLIENT_ID?': 'string',
     'MICROSOFT_CLIENT_SECRET?': 'string',
+    LOG_LEVEL: 'number = 0',
   },
   {
     env: cloudflareEnv as unknown as Record<string, string>,
