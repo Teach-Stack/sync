@@ -43,7 +43,7 @@ export const connect = new Hono()
 
       await setSignedCookie(
         c,
-        'teachstack-oauthState',
+        'teachstack.oauthState',
         JSON.stringify(oauthState),
         {
           httpOnly: true,
