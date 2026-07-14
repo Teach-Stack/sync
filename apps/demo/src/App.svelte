@@ -13,9 +13,11 @@
     <article data-title="/ping">
       <TestButton onclick={authClient.ping.$get} />
     </article>
-    <article data-title="/providers"></article>
-    <article data-title="/me"></article>
-
+    <article data-title="/providers">
+      <TestButton
+        onclick={authClient.providers.$get}
+      />
+    </article>
     <article data-title="/connect/:provider">
       <TestButton
         onclick={() =>
@@ -25,6 +27,8 @@
           })}
       />
     </article>
+    <article data-title="/auth/token"></article>
+    <article data-title="/auth/refresh"></article>
   </section>
 </main>
 

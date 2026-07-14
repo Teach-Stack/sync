@@ -7,10 +7,11 @@ import { logger } from './helpers/log'
 
 const log = logger.withTag('provider')
 
-export const ProviderKey = type(`'google' | 'microsoft'`)
+export const ProviderKeys = ['google', 'microsoft'] as const
+export const ProviderKey = type.enumerated(...ProviderKeys)
 export type ProviderKey = type.infer<typeof ProviderKey>
 
-class Provider {
+export class Provider {
   configuration?: client.Configuration
 
   constructor(
@@ -24,7 +25,7 @@ class Provider {
   get clientId() {
     const clientId = env[this.clientIdKey]
 
-    if (Array.isArray(clientId)) throw new Error('client id must be a string')
+    if (typeof clientId !== 'string') throw new Error('client id must be a string')
 
     return clientId
   }
@@ -32,7 +33,7 @@ class Provider {
   get clientSecret() {
     const clientSecret = env[this.clientSecretKey]
 
-    if (Array.isArray(clientSecret)) throw new Error('client secret must be a string')
+    if (typeof clientSecret !== 'string') throw new Error('client secret must be a string')
 
     return clientSecret
   }
