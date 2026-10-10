@@ -16,3 +16,5 @@ export {
   type InferResponseType,
   type ClientResponse,
 } from 'hono/client'
+
+export { type ProviderKey, ProviderKeys } from '@teach-stack/auth-server/client'

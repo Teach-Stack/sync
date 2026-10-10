@@ -4,10 +4,11 @@ import { env, type EnvKey } from './env'
 import * as client from 'openid-client'
 
 import { logger } from './helpers/log'
+import { ProviderKeys } from './providerKeys'
 
 const log = logger.withTag('provider')
 
-export const ProviderKeys = ['google', 'microsoft'] as const
+export { ProviderKeys }
 export const ProviderKey = type.enumerated(...ProviderKeys)
 export type ProviderKey = type.infer<typeof ProviderKey>
 
@@ -25,7 +26,7 @@ export class Provider {
   get clientId() {
     const clientId = env[this.clientIdKey]
 
-    if (typeof clientId !== 'string') throw new Error('client id must be a string')
+    if (typeof clientId !== 'string') return undefined
 
     return clientId
   }
@@ -33,7 +34,7 @@ export class Provider {
   get clientSecret() {
     const clientSecret = env[this.clientSecretKey]
 
-    if (typeof clientSecret !== 'string') throw new Error('client secret must be a string')
+    if (typeof clientSecret !== 'string') return undefined
 
     return clientSecret
   }

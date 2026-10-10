@@ -11,7 +11,7 @@ type CookieOptions = Parameters<typeof cookie.setCookie>[3]
 export async function getSignedCookie(c: Context, name: string) {
   const value = await cookie.getSignedCookie(c, env.SECRET_KEY, name)
   log.debug('read signed cookie', { name, found: Boolean(value) })
-  return value
+  return value ? value : undefined
 }
 
 export async function setSignedCookie(

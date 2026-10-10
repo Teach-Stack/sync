@@ -1,6 +1,7 @@
 <script>
   import { createClient } from '@teach-stack/auth'
   import TestButton from './TestButton.svelte'
+  import Example from './Example.svelte'
 
   const authClient = createClient('http://localhost:8787')
 </script>
@@ -8,15 +9,15 @@
 <h1>@teach-stack/auth demo site</h1>
 
 <main>
+  <Example />
+  <hr />
   <section id="api">
     <h2>API Kitchen Sink</h2>
     <article data-title="/ping">
       <TestButton onclick={authClient.ping.$get} />
     </article>
-    <article data-title="/providers">
-      <TestButton
-        onclick={authClient.providers.$get}
-      />
+    <article data-title="/connect/providers">
+      <TestButton onclick={authClient.connect.providers.$get} />
     </article>
     <article data-title="/connect/:provider">
       <TestButton
@@ -27,8 +28,10 @@
           })}
       />
     </article>
+    <article data-title="/auth/status">
+      <TestButton onclick={authClient.auth.status.$get} />
+    </article>
     <article data-title="/auth/token"></article>
-    <article data-title="/auth/refresh"></article>
   </section>
 </main>
 

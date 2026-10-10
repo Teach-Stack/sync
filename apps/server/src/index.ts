@@ -2,8 +2,9 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 
 import { connect } from './routes/connect'
+import { auth } from './routes/auth'
+
 import { env } from './env'
-import { providers } from './routes/providers'
 
 const app = new Hono()
   .use(
@@ -14,7 +15,7 @@ const app = new Hono()
     })
   )
   .route('/connect', connect)
-  .route('/providers', providers)
+  .route('/auth', auth)
   .get('/ping', (r) => r.json({ msg: 'pong' }))
 
 export default app

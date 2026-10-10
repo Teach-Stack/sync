@@ -17,39 +17,47 @@ const JWTPayload = type({
 
 const User = type({
   id: 'string',
-  provider: ProviderKey,
-  refresh_token: 'string',
+  providers: ProviderKey.array(),
 })
 
-export async function getUserById(c: Context, id: string, provider?: ProviderKey) {
+export type User = type.infer<typeof User>
+
+export async function getUserById(c: Context, id: string) {
   const db = getDB(c)
 
-  log.debug('looking up user', { id, provider })
+  log.debug('looking up user', { id })
 
-  let userRaw: Record<string, unknown> | null
+  const result = await db.prepare('SELECT id FROM users WHERE id = ?').bind(id).first()
 
-  if (provider) {
-    userRaw = await db
-      .prepare('SELECT * FROM users WHERE id = ? AND provider = ?')
-      .bind(id, provider)
-      .first()
-  } else {
-    userRaw = await db.prepare('SELECT * FROM users WHERE id = ?').bind(id).first()
-  }
-
-  const user = User(userRaw)
-
-  if (user instanceof ArkErrors) {
-    log.debug('user lookup miss', { id, provider })
+  if (result === null) {
+    log.debug('no user found', { id })
     return null
   }
 
-  log.debug('user lookup hit', { id: user.id, provider: user.provider })
+  log.debug('user found', { result })
 
-  return user
+  const providers = await db
+    .prepare('SELECT provider FROM users WHERE id = ?')
+    .bind(id)
+    .all()
+    .then(({ results }) =>
+      results
+        .map((result) => {
+          const parsedKey = ProviderKey(result.provider)
+          return parsedKey instanceof ArkErrors ? undefined : parsedKey
+        })
+        .filter((key) => key !== undefined)
+    )
+
+  log.debug('pulled providers for user', { id, providers })
+
+  return {
+    id,
+    providers,
+  } satisfies User
 }
 
-export async function getSessionUser(c: Context, provider?: ProviderKey) {
+export async function getSessionUser(c: Context) {
   const cookie = getCookie(c, 'teachstack.session')
 
   if (!cookie) {
@@ -68,5 +76,5 @@ export async function getSessionUser(c: Context, provider?: ProviderKey) {
 
   log.debug('session resolved', { sub: payload.sub })
 
-  return getUserById(c, payload.sub, provider)
+  return getUserById(c, payload.sub)
 }

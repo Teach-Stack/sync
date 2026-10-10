@@ -1,4 +1,4 @@
-import arkenv from 'arkenv'
+import arkenv from '@arkenv/core'
 import { type } from 'arktype'
 
 import { env as cloudflareEnv } from 'cloudflare:workers'

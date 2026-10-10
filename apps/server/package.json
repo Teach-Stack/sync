@@ -17,16 +17,17 @@
     "postinstall": "pnpm cf:types"
   },
   "dependencies": {
-    "@hono/standard-validator": "^0.2.3",
+    "@arkenv/core": "1.0.0-rc.4",
+    "@hono/standard-validator": "^0.4.0",
     "@standard-schema/spec": "^1.1.0",
-    "arkenv": "^0.12.2",
-    "arktype": "^2.2.3",
+    "arktype": "^2.2.8",
     "consola": "^3.4.2",
-    "hono": "^4.12.30",
-    "nanoid": "^6.0.0",
-    "openid-client": "^6.8.4"
+    "hono": "^4.13.13",
+    "nanoid": "^6.0.2",
+    "openid-client": "^6.8.8"
   },
   "devDependencies": {
+    "arkenv": "1.0.0-rc.3",
     "wrangler": "^4.110.0"
   }
 }

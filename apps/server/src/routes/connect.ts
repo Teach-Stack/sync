@@ -1,17 +1,20 @@
-import { sValidator } from '@hono/standard-validator'
 import { Hono } from 'hono'
+import { setCookie } from 'hono/cookie'
+import { sValidator } from '@hono/standard-validator'
 
 import { ArkErrors, type } from 'arktype'
-
-import { oauthCookieValidator } from '../validators/cookie'
-import { setSignedCookie } from '../helpers/cookies'
-import { providerValidator } from '../validators/provider'
-import { getSessionUser } from '../helpers/user'
 import { nanoid } from 'nanoid'
+
+import { setSignedCookie } from '../helpers/cookies'
 import { getDB } from '../helpers/db'
-import { setCookie } from 'hono/cookie'
 import { signJwt } from '../helpers/jwt'
 import { logger } from '../helpers/log'
+import { getSessionUser } from '../helpers/user'
+
+import { oauthCookie } from '../middleware/oauthCookie'
+import { providerValidator } from '../validators/provider'
+
+import { ProviderKey, providers } from '../providers'
 
 const log = logger.withTag('connect')
 
@@ -24,6 +27,12 @@ const TokenResponse = type({
 // type TokenResponse = typeof TokenResponse.infer
 
 export const connect = new Hono()
+  .get('/providers', (c) => {
+    return c.json<Record<ProviderKey, boolean>>({
+      google: providers.google.isConfigured,
+      microsoft: providers.microsoft.isConfigured,
+    })
+  })
   .get(
     '/:provider',
     providerValidator,
@@ -62,12 +71,11 @@ export const connect = new Hono()
       return c.json({ redirectUri })
     }
   )
-  .get('/:provider/callback', providerValidator, oauthCookieValidator, async (c) => {
+  .get('/:provider/callback', providerValidator, oauthCookie, async (c) => {
     const { provider } = c.req.valid('param')
 
-    const { oauthState } = c.req.valid('cookie')
+    const oauthState = c.var.oauthState
 
-    // Redact codeVerifier — it's a PKCE secret and must not be logged.
     log.debug('callback received', {
       provider: provider.key,
       returnTo: oauthState.returnTo,
@@ -89,7 +97,7 @@ export const connect = new Hono()
         hasRefreshToken: Boolean(tokens.refresh_token),
       })
 
-      const existingUser = await getSessionUser(c, provider.key)
+      const existingUser = await getSessionUser(c)
 
       let userId = nanoid()
 
@@ -97,9 +105,8 @@ export const connect = new Hono()
         userId = existingUser.id
       }
 
-      log.debug(existingUser ? 'existing user matched' : 'new user created', {
+      log.debug(existingUser ? 'existing userId matched' : 'new userId created', {
         userId,
-        provider: provider.key,
       })
 
       const db = getDB(c)
