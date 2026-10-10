@@ -1,6 +1,6 @@
 # @teach-stack/auth
 
-Client SDK for interfacing with the `apps/auth` server.
+Client SDK for interfacing with the `apps/server` server.
 
 Built on [Hono](https://hono.dev)'s RPC client, so requests to the auth server are type-safe.
 

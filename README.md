@@ -9,9 +9,9 @@ Most local-first sync solutions require a central database, so all user data mus
 ## Structure
 
 ```
-tech-stack-sync/
+teach-stack-sync/
 ├── apps/
-│   ├── auth/               # OAuth proxy backend (auth.teachstack.org)
+│   ├── server/             # OAuth proxy backend (auth.teachstack.org)
 │   └── demo/               # Demo site for local development and testing
 └── packages/
     ├── auth/               # Client SDK for interfacing with the auth server
