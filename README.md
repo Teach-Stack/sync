@@ -4,7 +4,7 @@ A monorepo providing local-first cloud sync infrastructure for the Teach Stack a
 
 ## Why
 
-Most local-first sync solutions require a central database. This means that all user data must pass through a shared server, which can be a privacy concern and a potential point of failure. By contrast, this approach allows users to keep their data in their own cloud storage, giving them more control and privacy.
+Most local-first sync solutions require a central database, so all user data must pass through a shared server. That server is a privacy concern and a potential point of failure. Here, users keep their data in their own cloud storage, which gives them more control and privacy.
 
 ## Structure
 

@@ -2,7 +2,7 @@
 
 Client SDK for interfacing with the `apps/auth` server.
 
-Built using [Hono](https://hono.dev)'s RPC client, which provides type safety and a simple API for making requests to the auth server.
+Built on [Hono](https://hono.dev)'s RPC client, so requests to the auth server are type-safe.
 
 ## Example usage
 
@@ -17,6 +17,6 @@ client.connect[':provider'].$get({ param: { provider: 'google' } }).then((res) =
 })
 ```
 
-For full reference utilize Hono's client API documentation: https://hono.dev/docs/guides/rpc#client
+For the full API reference, see Hono's client documentation: https://hono.dev/docs/guides/rpc#client
 
-Full example is available in the [`/apps/demo/`](https://github.com/teach-stack/sync/tree/main/apps/demo) directory of the monorepo, which demonstrates how to use the client SDK to authenticate providers and sync with SignalDB.
+A full example is in the monorepo's [`/apps/demo/`](https://github.com/teach-stack/sync/tree/main/apps/demo) directory. It shows how to use the client SDK to authenticate providers and sync with SignalDB.
