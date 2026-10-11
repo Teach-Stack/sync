@@ -114,6 +114,16 @@ export class Provider {
 
     return tokens
   }
+
+  async refresh(refreshToken: string) {
+    if (!this.configuration) {
+      this.configuration = await this.getConfiguration()
+    }
+
+    log.debug('refreshing access token', { provider: this.key })
+
+    return await client.refreshTokenGrant(this.configuration, refreshToken)
+  }
 }
 
 export const providers: Record<ProviderKey, Provider> = {

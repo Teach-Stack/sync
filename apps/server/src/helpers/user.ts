@@ -65,7 +65,11 @@ export async function getSessionUser(c: Context) {
     return null
   }
 
-  const raw = await verifyJwt(cookie)
+  // expired or tampered tokens are treated as logged out, not as a server error
+  const raw = await verifyJwt(cookie).catch((error) => {
+    log.debug('session jwt rejected', { error: String(error) })
+    return null
+  })
 
   const payload = JWTPayload(raw)
 

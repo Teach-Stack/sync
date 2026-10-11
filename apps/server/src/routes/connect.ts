@@ -138,12 +138,18 @@ export const connect = new Hono()
 
       log.debug('user upsert done', { userId, provider: provider.key })
 
-      const jwt = await signJwt({ sub: userId })
+      const sessionMaxAge = 60 * 60 * 24 * 30 // 30 days
+
+      const jwt = await signJwt({
+        sub: userId,
+        exp: Math.floor(Date.now() / 1000) + sessionMaxAge,
+      })
 
       setCookie(c, 'teachstack.session', jwt, {
         httpOnly: true,
         secure: true,
         sameSite: 'lax',
+        maxAge: sessionMaxAge,
       })
 
       log.debug('session cookie set, redirecting', { returnTo: oauthState.returnTo })

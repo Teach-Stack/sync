@@ -31,7 +31,11 @@
     <article data-title="/auth/status">
       <TestButton onclick={authClient.auth.status.$get} />
     </article>
-    <article data-title="/auth/token"></article>
+    <article data-title="/auth/token/:provider">
+      <TestButton
+        onclick={() => authClient.auth.token[':provider'].$post({ param: { provider: 'google' } })}
+      />
+    </article>
   </section>
 </main>
 
