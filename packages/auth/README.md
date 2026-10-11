@@ -7,13 +7,45 @@ Built on [Hono](https://hono.dev)'s RPC client, so requests to the auth server a
 ## Example usage
 
 ```ts
-import { createClient } from '@teach-stack/auth'
+import { createClient, type ProviderKey } from '@teach-stack/auth'
 
 const client = createClient('https://auth.teachstack.org')
 
-client.connect[':provider'].$get({ param: { provider: 'google' } }).then((res) => {
-  // redirect to the provider's auth page
-  window.location.href = res.url
+// 1. Send the user to the provider's consent page.
+//    After the callback, the server sets a session cookie and redirects back to `returnTo`.
+async function connect(provider: ProviderKey) {
+  const res = await client.connect[':provider'].$get({
+    param: { provider },
+    query: { returnTo: window.location.href },
+  })
+  const { redirectUri } = await res.json()
+  window.location.href = redirectUri
+}
+
+// 2. On page load, check the session and see which providers are connected.
+const status = await client.auth.status.$get()
+if (status.ok) {
+  const { providers } = await status.json() // e.g. ['google']
+}
+
+// 3. Get a fresh access token for a connected provider.
+//    The refresh token stays on the server; only the access token is returned.
+async function getAccessToken(provider: ProviderKey) {
+  const res = await client.auth.token[':provider'].$post({ param: { provider } })
+  const body = await res.json()
+
+  if ('access_token' in body) return body.access_token // valid for body.expires_in seconds
+
+  // The provider revoked or expired the refresh token, so the user has to connect again.
+  if (body.error === 'reauth_required') return connect(provider)
+
+  throw new Error(body.error)
+}
+
+// 4. Call the provider's API with the token.
+const token = await getAccessToken('google')
+await fetch('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder', {
+  headers: { Authorization: `Bearer ${token}` },
 })
 ```
 
