@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency: release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Check versions match tag
+        run: |
+          v="${GITHUB_REF_NAME#v}"
+          for p in apps/server packages/auth; do
+            [ "$(node -p "require('./$p/package.json').version")" = "$v" ] || { echo "::error::$p version != $v"; exit 1; }
+          done
+
+      - name: Build auth
+        run: pnpm --filter @teach-stack/auth build
+
+      - name: Deploy server
+        working-directory: apps/server
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pnpm exec wrangler d1 migrations apply teachstack-auth --remote
+          pnpm exec wrangler deploy
+
+      - name: Publish auth
+        working-directory: packages/auth
+        run: |
+          pnpm pack --out auth.tgz
+          npm publish auth.tgz --access public --provenance

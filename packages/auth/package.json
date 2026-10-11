@@ -1,6 +1,6 @@
 {
   "name": "@teach-stack/auth",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Helper library for communicating with TeachStack auth backend",
   "license": "AGPL-3.0-only",
   "author": "Justin Forlenza",

@@ -10,4 +10,10 @@
       "migrations_dir": "migrations",
     },
   ],
+  "routes": [
+    {
+      "pattern": "auth.teachstack.org",
+      "custom_domain": true,
+    },
+  ],
 }
