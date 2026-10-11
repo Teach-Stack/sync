@@ -23,6 +23,7 @@ const TokenResponse = type({
   refresh_token: 'string',
   expires_in: 'number',
   refresh_token_expires_in: 'number',
+  scope: 'string',
 })
 // type TokenResponse = typeof TokenResponse.infer
 
@@ -89,6 +90,19 @@ export const connect = new Hono()
       if (tokens instanceof ArkErrors) {
         log.error('token validation failed', tokens.toJSON())
         return c.json({ error: 'Invalid token response' }, 500)
+      }
+
+      const granted = tokens.scope.split(' ')
+      // Microsoft may return scopes prefixed with the resource URL
+      const missing = provider.requiredScopes.filter(
+        (s) => !granted.some((g) => g === s || g.endsWith(`/${s}`))
+      )
+
+      if (missing.length) {
+        log.warn('missing scopes', { provider: provider.key, missing })
+        const url = new URL(oauthState.returnTo)
+        url.searchParams.set('teachstack_sync_error', 'missing_scopes')
+        return c.redirect(url.href)
       }
 
       log.debug('token exchange ok', {

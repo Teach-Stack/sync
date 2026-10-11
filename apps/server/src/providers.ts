@@ -43,6 +43,10 @@ export class Provider {
     return this.clientId !== undefined && this.clientSecret !== undefined
   }
 
+  get requiredScopes() {
+    return this.scopes.filter((s) => !['openid', 'email', 'profile', 'offline_access'].includes(s))
+  }
+
   async getConfiguration() {
     if (this.clientId === undefined || this.clientSecret === undefined) {
       throw new Error(`Provider ${this.key} is not configured`)
